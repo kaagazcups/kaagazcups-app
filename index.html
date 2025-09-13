@@ -14,10 +14,8 @@
         body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
         .loading-spinner { border: 4px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top: 4px solid #ffffff; width: 1.5rem; height: 1.5rem; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
         .active-nav-btn { color: #14b8a6; /* Teal-500 */ }
         .active-fav-btn { color: #ef4444; }
-
         .status-chip { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
         .status-pending { background-color: #fef9c3; color: #a16207; }
         .status-shipped, .status-orderonway, .status-leftfactory { background-color: #cffafe; color: #0891b2; }
@@ -26,7 +24,6 @@
         .status-returned { background-color: #fed7aa; color: #9a3412; }
         .status-orderinprocess { background-color: #e0f2fe; color: #0284c7; }
         .status-orderready { background-color: #dcfce7; color: #166534; }
-
         .modal-backdrop {
             position: fixed; inset: 0; z-index: 50; display: flex;
             align-items: center; justify-content: center;
@@ -35,7 +32,6 @@
             opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
         }
         .modal-backdrop:not(.hidden) { opacity: 1; pointer-events: auto; }
-        
         .modal-content {
             position: relative; width: 100%; max-width: 26rem; 
             margin: 1rem; background-color: #ffffff; border-radius: 1.5rem;
@@ -44,7 +40,6 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .modal-backdrop:not(.hidden) .modal-content { transform: scale(1); opacity: 1; }
-        
         .modal-scroll { max-height: 85vh; overflow-y: auto; }
     </style>
 </head>
@@ -60,7 +55,7 @@
             <h1 id="pageTitle" class="text-xl font-bold text-slate-800 truncate">Home</h1>
             <input id="searchBar" type="text" placeholder="Search products..." class="w-full max-w-xs px-3 py-1.5 border rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 hidden sm:block">
             <div id="customer-icons" class="flex items-center gap-2 ml-auto">
-                 <div class="relative">
+                <div class="relative">
                     <button id="favBtn" class="p-2 rounded-full hover:bg-gray-100" onclick="showFavorites()"><span class="text-xl">❤️</span></button>
                     <span id="favBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full">0</span>
                 </div>
@@ -97,104 +92,58 @@
         </footer>
     </div>
     
-    <!-- All Modals (Login, Signup, Cart, etc.) -->
+    <button id="addProductFab" onclick="openProductModal()" class="fixed bottom-24 right-6 bg-teal-500 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-3xl hidden">+</button>
 
+    <!-- All Modals -->
     <div id="loginModal" class="modal-backdrop hidden">
         <div class="modal-content">
             <div class="modal-scroll p-8 text-center">
                 <h2 class="text-2xl font-bold mb-2">Welcome Back!</h2>
                 <p class="text-gray-500 mb-6">Log in to continue.</p>
-                <input id="loginIdentifier" type="text" placeholder="Mobile or Email" class="w-full p-3 border rounded-lg mb-4">
-                <input id="loginPasscode" type="password" placeholder="Passcode" class="w-full p-3 border rounded-lg mb-6">
-                <button id="submitLoginBtn" onclick="submitLogin()" class="w-full bg-teal-500 text-white font-bold py-3 rounded-lg hover:bg-teal-600">Log In</button>
+                <form id="loginForm">
+                    <input id="loginIdentifier" type="text" placeholder="Mobile or Email" class="w-full p-3 border rounded-lg mb-4">
+                    <input id="loginPasscode" type="password" placeholder="Passcode" class="w-full p-3 border rounded-lg mb-6">
+                    <button id="submitLoginBtn" type="submit" class="w-full bg-teal-500 text-white font-bold py-3 rounded-lg hover:bg-teal-600">Log In</button>
+                </form>
                 <p class="mt-4 text-sm">Don't have an account? <button onclick="openSignup()" class="text-teal-500 font-semibold">Sign Up</button></p>
             </div>
             <button onclick="closeModal('loginModal')" class="absolute top-4 right-4 text-2xl text-gray-400">&times;</button>
         </div>
     </div>
-
     <div id="signupModal" class="modal-backdrop hidden">
         <div class="modal-content">
              <div class="modal-scroll p-8">
                 <h2 class="text-2xl font-bold mb-4 text-center">Create Account</h2>
-                <div class="space-y-4">
-                    <input id="signup-name" type="text" placeholder="Full Name" class="w-full p-3 border rounded-lg">
+                <form id="signupForm" class="space-y-4">
+                    <input id="signup-name" type="text" placeholder="Full Name *" required class="w-full p-3 border rounded-lg">
                     <input id="signup-company" type="text" placeholder="Company Name" class="w-full p-3 border rounded-lg">
-                    <input id="signup-mobile" type="tel" placeholder="Mobile Number" class="w-full p-3 border rounded-lg">
-                    <input id="signup-email" type="email" placeholder="Email Address" class="w-full p-3 border rounded-lg">
-                    <input id="signup-passcode" type="password" placeholder="Create Passcode" class="w-full p-3 border rounded-lg">
+                    <input id="signup-mobile" type="tel" placeholder="Mobile Number *" required class="w-full p-3 border rounded-lg">
+                    <input id="signup-email" type="email" placeholder="Email Address (Optional)" class="w-full p-3 border rounded-lg">
+                    <input id="signup-passcode" type="password" placeholder="Create Passcode *" required class="w-full p-3 border rounded-lg">
                     <input id="signup-city" type="text" placeholder="City" class="w-full p-3 border rounded-lg">
                     <input id="signup-gst" type="text" placeholder="GST Number (Optional)" class="w-full p-3 border rounded-lg">
                     <select id="signup-role" class="w-full p-3 border rounded-lg bg-white"><option value="Customer">I am a Customer</option><option value="Manufacturer">I am a Manufacturer</option></select>
-                </div>
-                <button id="submitSignupBtn" onclick="submitSignup()" class="w-full bg-teal-500 text-white font-bold py-3 rounded-lg mt-6 hover:bg-teal-600">Sign Up</button>
+                    <button id="submitSignupBtn" type="submit" class="w-full bg-teal-500 text-white font-bold py-3 rounded-lg mt-2 hover:bg-teal-600">Sign Up</button>
+                </form>
                 <p class="mt-4 text-sm text-center">Already have an account? <button onclick="openLogin()" class="text-teal-500 font-semibold">Log In</button></p>
             </div>
              <button onclick="closeModal('signupModal')" class="absolute top-4 right-4 text-2xl text-gray-400">&times;</button>
         </div>
     </div>
-    
-    <div id="cartModal" class="modal-backdrop hidden">
+    <div id="cartModal" class="modal-backdrop hidden"><!-- Cart Content --></div>
+    <div id="favModal" class="modal-backdrop hidden"><!-- Favorites Content --></div>
+    <div id="productDetailModal" class="modal-backdrop hidden">
         <div class="modal-content">
-            <div class="p-6 border-b"><h2 class="text-xl font-bold">Your Cart 🛒</h2></div>
-            <div id="cartItemsList" class="modal-scroll p-6 space-y-4"></div>
-            <div class="p-6 bg-gray-50 rounded-b-2xl">
-                <div class="flex justify-between items-center text-lg font-bold mb-4"><span>Total:</span><span id="cartTotal">₹0.00</span></div>
-                <button onclick="handleProceedToCheckout()" class="w-full bg-teal-500 text-white font-bold py-3 rounded-lg">Proceed to Checkout</button>
-                <button onclick="clearCart()" class="w-full text-center text-red-500 text-sm mt-3">Clear Cart</button>
-            </div>
-            <button onclick="closeModal('cartModal')" class="absolute top-4 right-4 text-2xl text-gray-400">&times;</button>
+            <div id="productDetailContent" class="modal-scroll"></div>
+            <button onclick="closeModal('productDetailModal')" class="absolute top-4 right-4 text-2xl text-gray-400">&times;</button>
         </div>
     </div>
-    
-    <div id="favModal" class="modal-backdrop hidden">
-        <div class="modal-content">
-            <div class="p-6 border-b"><h2 class="text-xl font-bold">Your Favorites ❤️</h2></div>
-            <div id="favItemsList" class="modal-scroll p-6 space-y-4"></div>
-            <div class="p-6 bg-gray-50 rounded-b-2xl">
-                 <button onclick="clearFavorites()" class="w-full text-center text-red-500 text-sm">Clear Favorites</button>
-            </div>
-            <button onclick="closeModal('favModal')" class="absolute top-4 right-4 text-2xl text-gray-400">&times;</button>
-        </div>
-    </div>
-    
-    <div id="orderSummaryModal" class="modal-backdrop hidden">
-        <div class="modal-content">
-            <div class="p-6 border-b"><h2 class="text-xl font-bold">Order Summary</h2></div>
-            <div class="modal-scroll p-6">
-                <div id="orderSummaryContent"></div>
-                <div class="mt-6">
-                    <h3 class="font-semibold mb-2">Available Rewards</h3>
-                    <div id="availableRewardsList" class="space-y-2"></div>
-                </div>
-            </div>
-            <button onclick="closeModal('orderSummaryModal')" class="absolute top-4 right-4 text-2xl text-gray-400">&times;</button>
-        </div>
-    </div>
-
-    <div id="productModal" class="modal-backdrop hidden">
-        <div class="modal-content">
-            <div class="p-6 border-b"><h2 id="productModalTitle" class="text-xl font-bold">Add Product</h2></div>
-            <form id="productForm" class="modal-scroll p-6 space-y-4">
-                <input type="hidden" id="product-id">
-                <div><label>Product Name</label><input type="text" id="product-name" class="w-full p-2 border rounded-md mt-1" required></div>
-                <div><label>Description</label><textarea id="product-description" class="w-full p-2 border rounded-md mt-1" rows="3"></textarea></div>
-                <div><label>Price (₹)</label><input type="number" id="product-price" class="w-full p-2 border rounded-md mt-1" required></div>
-                <div><label>Image URL</label><input type="url" id="product-image" class="w-full p-2 border rounded-md mt-1"></div>
-                <div><label>Minimum Order Qty</label><input type="number" id="product-min-order" class="w-full p-2 border rounded-md mt-1" value="1"></div>
-                <div><label>Product Type</label><select id="product-type" class="w-full p-2 border rounded-md mt-1 bg-white"></select></div>
-                <button type="submit" id="saveProductBtn" class="w-full bg-teal-500 text-white font-bold py-3 rounded-lg mt-2">Save Product</button>
-            </form>
-            <button onclick="closeModal('productModal')" class="absolute top-4 right-4 text-2xl text-gray-400">&times;</button>
-        </div>
-    </div>
-    <!-- ... other modals ... -->
 
     <script type="module">
         // --- FIREBASE SDK IMPORTS ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         //
         // ⬇️⬇️⬇️ PASTE YOUR FIREBASE CONFIGURATION HERE ⬇️⬇️⬇️
@@ -219,24 +168,26 @@
         const db = getFirestore(app);
 
         // --- GLOBAL STATE ---
+        let isLoggedIn = false;
         let currentUser = null;
         let currentUserProfile = null;
         let productDataStore = [];
         let currentFamilyId = null;
         let cartItems = [];
         let favItems = [];
-        
+        let userOrdersCache = [];
+
         // --- DOM ELEMENT REFERENCES ---
         const pageTitle = document.getElementById('pageTitle');
         const backBtn = document.getElementById('backBtn');
         const searchBar = document.getElementById('searchBar');
-        // ... (add other element references as needed) ...
-
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        
         // --- CORE AUTHENTICATION LISTENER ---
         onAuthStateChanged(auth, user => {
             if (user) {
                 currentUser = user;
-                // Listen for real-time profile updates
                 const userDocRef = doc(db, 'users', user.uid);
                 onSnapshot(userDocRef, (docSnap) => {
                     if (docSnap.exists()) {
@@ -246,10 +197,7 @@
                         isLoggedIn = true;
                         updateUserMenu();
                         updateUIForRole();
-                        loadCartForUser();
-                        loadFavoritesForUser();
                     } else {
-                        // User exists in Auth but not Firestore, force logout
                         logoutUser();
                     }
                 });
@@ -257,101 +205,227 @@
                 currentUser = null;
                 currentUserProfile = null;
                 isLoggedIn = false;
-                localStorage.removeItem('userRole');
-                localStorage.removeItem('userName');
+                localStorage.clear();
                 updateUserMenu();
                 updateUIForRole();
-                loadCart(); // Load guest cart
-                loadFavorites(); // Load guest favorites
             }
         });
 
         // --- UI & NAVIGATION FUNCTIONS ---
-        // (Includes: showDebug, closeModal, setButtonState, setActiveNavBtn, hideAllViews, goBack, etc.)
-        // This is where you would place all your UI helper functions.
+        function showDebug(msg, isError = false, timeout = 4000) {
+            const banner = document.getElementById('debugBanner');
+            if (!banner) return;
+            banner.textContent = msg;
+            banner.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-[60] p-3 rounded-lg text-sm transition-all duration-300 opacity-0 pointer-events-auto';
+            banner.classList.remove('opacity-0');
+            if (isError) banner.classList.add('bg-red-100', 'text-red-700');
+            else banner.classList.add('bg-green-100', 'text-green-700');
+            clearTimeout(banner._to);
+            banner._to = setTimeout(() => { banner.classList.add('opacity-0'); }, timeout);
+        }
 
-        // --- DATA FETCHING & RENDERING (Converted from Code.gs) ---
-        async function getTypes() {
-            try {
-                const typesCol = collection(db, "types");
-                const typeSnapshot = await getDocs(typesCol);
-                const typesList = typeSnapshot.docs.map(doc => doc.data());
-                return typesList;
-            } catch (error) {
-                showDebug("Error loading categories: " + error.message, true);
-                return [];
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function setButtonState(buttonId, state, defaultText) {
+            const btn = document.getElementById(buttonId);
+            if (!btn) return;
+            btn.disabled = state === 'loading';
+            if (state === 'loading') {
+                btn.innerHTML = `<div class="loading-spinner mx-auto"></div>`;
+            } else {
+                btn.innerHTML = defaultText;
+            }
+        }
+        
+        function setActiveNavBtn(btnId) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-nav-btn'));
+            const btn = document.getElementById(btnId);
+            if (btn) btn.classList.add('active-nav-btn');
+        }
+
+        function hideAllViews() {
+            ['homeView', 'categoriesView', 'productsView', 'ordersView', 'accountView', 'adminView'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+        }
+        
+        function goBack() {
+            if (!document.getElementById('productsView').classList.contains('hidden')) {
+                showCategories();
+            } else {
+                showHome();
             }
         }
 
-        async function getProductsWithManufacturerDetails(productTypeId, query) {
-            // This function replaces your old getProducts and joins user data
+        function updateUIForRole() {
+            const role = localStorage.getItem('userRole');
+            const navConfig = {
+                Customer: ['navHomeBtn', 'navCategoriesBtn', 'navOrdersBtn', 'navAccountBtn'],
+                Manufacturer: ['navMyProductsBtn', 'navReceivedOrdersBtn', 'navAccountBtn'],
+                Admin: ['navAdminBtn', 'navAccountBtn'],
+                default: ['navHomeBtn', 'navCategoriesBtn', 'navOrdersBtn', 'navAccountBtn']
+            };
+            const navToShow = navConfig[role] || navConfig.default;
+            
+            document.querySelectorAll('footer .nav-btn').forEach(btn => btn.classList.add('hidden'));
+            navToShow.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) btn.classList.remove('hidden');
+            });
+
+            document.getElementById('customer-icons').classList.toggle('hidden', !!role && role !== 'Customer');
+            document.getElementById('addProductFab').classList.toggle('hidden', role !== 'Manufacturer');
+
+            if (role === 'Manufacturer') showMyProducts();
+            else if (role === 'Admin') showAdminConsole();
+            else showHome();
+        }
+
+        function updateUserMenu() {
+            const menu = document.getElementById('loginMenu');
+            const loginBtn = document.getElementById('loginBtn');
+            if (isLoggedIn) {
+                menu.innerHTML = `<button class="w-full text-left px-3 py-2 hover:bg-gray-100" onclick="logoutUser()">Logout</button>`;
+                loginBtn.innerHTML = `👤 ${localStorage.getItem('userName') || 'Account'}`;
+                loginBtn.classList.add('bg-teal-500', 'text-white');
+                loginBtn.classList.remove('bg-gray-200');
+            } else {
+                menu.innerHTML = `<button class="w-full text-left px-3 py-2 hover:bg-gray-100" onclick="openLogin()">Login</button>
+                                  <button class="w-full text-left px-3 py-2 hover:bg-gray-100" onclick="openSignup()">Sign Up</button>`;
+                loginBtn.innerHTML = '👤 Log In';
+                loginBtn.classList.remove('bg-teal-500', 'text-white');
+                loginBtn.classList.add('bg-gray-200');
+            }
+        }
+
+        function toggleLoginMenu() {
+            document.getElementById('loginMenu').classList.toggle('hidden');
+        }
+
+        // --- AUTHENTICATION FUNCTIONS ---
+        function openLogin() {
+            closeModal('signupModal');
+            document.getElementById('loginModal').classList.remove('hidden');
+        }
+
+        function openSignup() {
+            closeModal('loginModal');
+            document.getElementById('signupModal').classList.remove('hidden');
+        }
+
+        async function submitLogin(event) {
+            event.preventDefault();
+            setButtonState('submitLoginBtn', 'loading', 'Log In');
+            const identifier = document.getElementById('loginIdentifier').value;
+            const passcode = document.getElementById('loginPasscode').value;
+            let emailToLogin = identifier;
+
+            if (!identifier.includes('@') && /^\d+$/.test(identifier)) {
+                try {
+                    const usersRef = collection(db, 'users');
+                    const q = query(usersRef, where("mobile", "==", identifier));
+                    const querySnapshot = await getDocs(q);
+                    if (!querySnapshot.empty) {
+                        emailToLogin = querySnapshot.docs[0].data().email;
+                    } else {
+                        throw new Error("No account found with that mobile number.");
+                    }
+                } catch (error) {
+                    showDebug(error.message, true);
+                    setButtonState('submitLoginBtn', 'default', 'Log In');
+                    return;
+                }
+            }
+            
             try {
-                // 1. Get all manufacturers and map them for easy lookup
-                const usersRef = collection(db, "users");
-                const manuQuery = query(usersRef, where("role", "==", "Manufacturer"));
-                const manuSnapshot = await getDocs(manuQuery);
-                const manuMap = new Map();
-                manuSnapshot.forEach(doc => manuMap.set(doc.id, doc.data()));
+                await signInWithEmailAndPassword(auth, emailToLogin, passcode);
+                closeModal('loginModal');
+            } catch (error) {
+                showDebug("Invalid credentials or account not yet active.", true);
+            } finally {
+                setButtonState('submitLoginBtn', 'default', 'Log In');
+            }
+        }
 
-                // 2. Query products with optional filters
-                let productQuery = collection(db, "products");
-                if (productTypeId) {
-                    productQuery = query(productQuery, where("productTypeId", "==", productTypeId));
-                }
-                const productSnapshot = await getDocs(productQuery);
+        async function submitSignup(event) {
+            event.preventDefault();
+            setButtonState('submitSignupBtn', 'loading', 'Sign Up');
+            const mobile = document.getElementById('signup-mobile').value;
+            let email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-passcode').value;
 
-                // 3. Map products and attach manufacturer details
-                let productsList = productSnapshot.docs.map(doc => {
-                    const product = doc.data();
-                    const manuDetails = manuMap.get(product.manufacturer) || { name: 'N/A', companyName: 'N/A', city: 'N/A' };
-                    return { ...product, manufacturerDetails: manuDetails };
-                });
+            if (!email) email = `${mobile}@kaagazcups.app`;
 
-                // 4. Client-side search filtering
-                if (query) {
-                    const lowerQuery = query.toLowerCase();
-                    productsList = productsList.filter(p => (p.itemName || '').toLowerCase().includes(lowerQuery));
-                }
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
                 
-                return { success: true, products: productsList };
-
+                const userDocRef = doc(db, 'users', user.uid);
+                await setDoc(userDocRef, {
+                    userId: user.uid,
+                    createdAt: serverTimestamp(),
+                    name: document.getElementById('signup-name').value,
+                    companyName: document.getElementById('signup-company').value,
+                    mobile: mobile,
+                    role: document.getElementById('signup-role').value,
+                    email: email,
+                    status: 'inactive',
+                    city: document.getElementById('signup-city').value,
+                    gstNumber: document.getElementById('signup-gst').value
+                });
+                
+                showDebug('Account created! Please wait for admin activation.');
+                closeModal('signupModal');
+                openLogin();
             } catch (error) {
-                showDebug("Error loading products: " + error.message, true);
-                return { success: false, error: error.message };
+                showDebug(error.message, true);
+            } finally {
+                setButtonState('submitSignupBtn', 'default', 'Sign Up');
             }
         }
 
-        // --- EVENT LISTENERS & INITIALIZATION ---
-    window.onload = () => {
-        // onAuthStateChanged now handles the initial state.
-        // Add event listeners for elements that are always present.
-        searchBar.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase().trim();
-            const filteredProducts = productDataStore.filter(p => (p.itemName || '').toLowerCase().includes(query));
-            renderProductCards(filteredProducts);
-        });
-    };
+        function logoutUser() {
+            signOut(auth);
+        }
 
-    // --- Make functions globally available for onclick attributes ---
-    window.goBack = goBack;
-    window.showFavorites = () => { /* Implement showFavorites logic */ };
-    window.showCart = () => { /* Implement showCart logic */ };
-    window.toggleLoginMenu = toggleLoginMenu;
-    window.showHome = showHome;
-    window.showCategories = showCategories;
-    window.showMyOrders = () => { /* Implement showMyOrders logic */ };
-    window.showMyAccount = () => { /* Implement showMyAccount logic */ };
-    window.showMyProducts = () => { /* Implement showMyProducts logic */ };
-    window.showReceivedOrders = () => { /* Implement showReceivedOrders logic */ };
-    window.showAdminConsole = () => { /* Implement showAdminConsole logic */ };
-    window.openProductModal = () => { /* Implement openProductModal logic */ };
-    window.closeModal = closeModal;
-    window.openLogin = () => { document.getElementById('loginModal').classList.remove('hidden'); };
-    window.openSignup = () => { document.getElementById('signupModal').classList.remove('hidden'); };
-    window.submitLogin = () => { /* Implement submitLogin logic */ };
-    window.submitSignup = () => { /* Implement submitSignup logic */ };
-    window.logoutUser = () => { signOut(auth); };
+        // --- Make functions globally available for onclick attributes ---
+        window.goBack = goBack;
+        window.showFavorites = () => showDebug("Favorites not implemented yet.");
+        window.showCart = () => showDebug("Cart not implemented yet.");
+        window.toggleLoginMenu = toggleLoginMenu;
+        window.showHome = showHome;
+        window.showCategories = showCategories;
+        window.showMyOrders = () => showDebug("My Orders not implemented yet.");
+        window.showMyAccount = () => showDebug("My Account not implemented yet.");
+        window.showMyProducts = () => showDebug("My Products not implemented yet.");
+        window.showReceivedOrders = () => showDebug("Received Orders not implemented yet.");
+        window.showAdminConsole = () => showDebug("Admin Console not implemented yet.");
+        window.openProductModal = () => showDebug("Product Modal not implemented yet.");
+        window.closeModal = closeModal;
+        window.openLogin = openLogin;
+        window.openSignup = openSignup;
+        window.submitLogin = submitLogin;
+        window.submitSignup = submitSignup;
+        window.logoutUser = logoutUser;
+        
+        // --- Attach form submit listeners ---
+        loginForm.addEventListener('submit', submitLogin);
+        signupForm.addEventListener('submit', submitSignup);
     </script>
 </body>
 </html>
+
+
+        //
+        // ⬇️⬇️⬇️ PASTE YOUR FIREBASE CONFIGURATION HERE ⬇️⬇️⬇️
+        //
+
+        //
+        // ⬆️⬆️⬆️ PASTE YOUR FIREBASE CONFIGURATION HERE ⬆️⬆️⬆️
+        //
+
 
